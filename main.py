@@ -36,9 +36,11 @@ class TestUrbanRoutes:
        routes_page.select_supportive_plan()
        assert routes_page.get_current_selected_plan() == 'Supportive'
 
+
     def test_fill_phone_number(self):
-        self.driver.get(URBAN_ROUTES_URL)
+        self.driver.get(data.URBAN_ROUTES_URL)
         routes_page = UrbanRoutesPage(self.driver)
+        routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
         routes_page.enter_phone_number(data.PHONE_NUMBER)
         phone_value = self.driver.find_element(By.ID, 'phone').get_attribute('value')
         assert phone_value == data.PHONE_NUMBER
