@@ -15,7 +15,7 @@ class UrbanRoutesPage:
     # Tariff and call button
     supportive_plan_card = (By.XPATH, '//div[contains(text(),"Supportive")]')
     supportive_plan_card_parent = (By.XPATH, '//div[contains(text(),"Supportive")]//..')
-    active_plan_card = (By.XPATH, '//div[@class="card active"]//div[@class="card-title"]')
+    active_plan_card = (By.XPATH, '//div[@class="tcard active"]//div[@class="tcard-title"]')
     call_taxi_button = (By.XPATH, '//button[contains(text(),"Call a taxi")]')
 
     # Phone number flow
