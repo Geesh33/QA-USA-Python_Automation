@@ -41,9 +41,8 @@ class TestUrbanRoutes:
         routes_page = UrbanRoutesPage(self.driver)
         routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
         phone_number = data.PHONE_NUMBER
-        routes_page.enter_phone_number(phone_number)
-        phone_value = routes_page.get_phone()
-        assert phone_value == phone_number
+        routes_page.set_phone(phone_number)
+        assert routes_page.get_phone() == phone_number
 
     def test_fill_card(self):
         self.driver.get(URBAN_ROUTES_URL)

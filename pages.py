@@ -63,8 +63,16 @@ class UrbanRoutesPage:
         WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located(self.call_taxi_button))
         self.driver.find_element(*self.call_taxi_button).click()
 
+    def set_phone(self, number):
+        self.driver.find_element(*self.phone_number_control).click()
+        self.driver.find_element(*self.phone_number_input).send_keys(number)
+        self.driver.find_element(*self.phone_number_next_button).click()
+        code = retrieve_phone_code(self.driver)
+        self.driver.find_element(*self.phone_number_code_input).send_keys(code)
+        self.driver.find_element(*self.phone_number_confirm_button).click()
+
     def get_phone(self):
-        return self.driver.find_element(self.phone_number).text
+        return self.driver.find_element(*self.phone_number).text
 
     def set_route(self, from_address, to_address):
         self.set_from(from_address)
