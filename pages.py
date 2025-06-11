@@ -19,11 +19,11 @@ class UrbanRoutesPage:
     call_taxi_button = (By.XPATH, '//button[contains(text(),"Call a taxi")]')
 
     # Phone number flow
-    phone_number_control = (By.ID, 'phone')  # clickable field or button to open phone input
-    phone_number_input = (By.ID, 'phone-input')
-    phone_number_next_button = (By.ID, 'phone-next')
+    phone_number_control = (By.XPATH, '//div[@class="np-button"]//div[contains(text(), "Phone number")]')
+    phone_number_input = (By.ID, 'phone')
     phone_number_code_input = (By.ID, 'code')
-    phone_number_confirm_button = (By.ID, 'confirm-code')
+    phone_number_next_button = (By.CSS_SELECTOR, '.full')
+    phone_number_confirm_button = (By.XPATH, '//button[contains(text(), "Confirm")]')
     phone_number = (By.CLASS_NAME, 'np-text')
 
     # Card details
@@ -64,7 +64,7 @@ class UrbanRoutesPage:
         self.driver.find_element(*self.call_taxi_button).click()
 
     def get_phone(self):
-        return self.driver.find_element(*self.phone_number).text
+        return self.driver.find_element(self.phone_number).text
 
     def set_route(self, from_address, to_address):
         self.set_from(from_address)
@@ -81,9 +81,9 @@ class UrbanRoutesPage:
         self.driver.find_element(self.phone_number_control).click()
         self.driver.find_element(self.phone_number_input).send_keys(phone_number)
         self.driver.find_element(self.phone_number_next_button).click()
-        code = retrieve_phone_code(phone_number)
+        code = retrieve_phone_code(self.driver)
         self.driver.find_element(self.phone_number_code_input).send_keys(code)
-        self.driver.find_element(*self.phone_number_confirm_button).click()
+        self.driver.find_element(self.phone_number_confirm_button).click()
 
     def enter_card_details(self, number, expiry, cvv):
         self.driver.find_element(*self.card_number_input).send_keys(number)
