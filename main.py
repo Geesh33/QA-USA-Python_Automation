@@ -1,7 +1,5 @@
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-
 import data
 from helpers import is_url_reachable
 from data import URBAN_ROUTES_URL
@@ -25,68 +23,96 @@ class TestUrbanRoutes:
     def test_set_route(self):
         self.driver.get(URBAN_ROUTES_URL)
         routes_page = UrbanRoutesPage(self.driver)
-        routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
+        routes_page.enter_from(data.ADDRESS_FROM)
+        routes_page.enter_to(data.ADDRESS_TO)
         assert routes_page.get_from() == data.ADDRESS_FROM
         assert routes_page.get_to() == data.ADDRESS_TO
 
     def test_select_plan(self):
-       self.driver.get(URBAN_ROUTES_URL)
-       routes_page = UrbanRoutesPage(self.driver)
-       routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
-       routes_page.select_supportive_plan()
-       assert routes_page.get_current_selected_plan() == 'Supportive'
+        self.driver.get(URBAN_ROUTES_URL)
+        routes_page = UrbanRoutesPage(self.driver)
+        routes_page.enter_from(data.ADDRESS_FROM)
+        routes_page.enter_to(data.ADDRESS_TO)
+        routes_page.click_call_a_taxi()
+        routes_page.click_supportive()
+        assert routes_page.get_active_plan() == "Supportive"
 
     def test_fill_phone_number(self):
         self.driver.get(data.URBAN_ROUTES_URL)
         routes_page = UrbanRoutesPage(self.driver)
-        routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
-        phone_number = data.PHONE_NUMBER
-        routes_page.set_phone(phone_number)
-        assert routes_page.get_phone() == phone_number
+        routes_page.enter_from(data.ADDRESS_FROM)
+        routes_page.enter_to(data.ADDRESS_TO)
+        routes_page.click_call_a_taxi()
+        routes_page.select_phone()
+        routes_page.enter_phone(data.PHONE_NUMBER)
+        routes_page.next_button()
+        routes_page.code_field()
+        routes_page.confirm_button()
+        assert routes_page.get_phone() == data.PHONE_NUMBER
+
 
     def test_fill_card(self):
         self.driver.get(URBAN_ROUTES_URL)
         routes_page = UrbanRoutesPage(self.driver)
-        routes_page.enter_card_details(data.CARD_NUMBER, data.EXPIRY_DATE, data.CVV)
-        card_value = self.driver.find_element(By.ID, 'card-number').get_attribute('value')
-        assert card_value.endswith("1111")
+        routes_page.enter_from(data.ADDRESS_FROM)
+        routes_page.enter_to(data.ADDRESS_TO)
+        routes_page.click_call_a_taxi()
+        routes_page.click_supportive()
+        routes_page.select_payment_method()
+        routes_page.click_add_card()
+        routes_page.enter_card_number(data.CARD_NUMBER)
+        routes_page.enter_card_code(data.CARD_CODE)
+        routes_page.click_on_title()
+        routes_page.click_link_button()
+        assert routes_page.get_current_payment_method_type() == 'Card'
+
+
 
     def test_comment_for_driver(self):
         self.driver.get(URBAN_ROUTES_URL)
         routes_page = UrbanRoutesPage(self.driver)
-        routes_page.add_driver_comment(data.DRIVER_COMMENT)
-        comment_value = self.driver.find_element(By.ID, 'driver-comment').get_attribute('value')
-        assert comment_value == data.DRIVER_COMMENT
+        routes_page.enter_from(data.ADDRESS_FROM)
+        routes_page.enter_to(data.ADDRESS_TO)
+        routes_page.click_call_a_taxi()
+        routes_page.enter_message(data.MESSAGE_FOR_DRIVER)
+        assert routes_page.get_current_message() == data.MESSAGE_FOR_DRIVER
 
     def test_order_blanket_and_handkerchiefs(self):
         self.driver.get(URBAN_ROUTES_URL)
         routes_page = UrbanRoutesPage(self.driver)
-        routes_page.order_blanket_and_handkerchiefs()
-        # Optionally assert some visible confirmation
-        blanket_ordered = self.driver.find_element(By.ID, 'blanket-confirm').is_displayed()
-        handkerchief_ordered = self.driver.find_element(By.ID, 'handkerchief-confirm').is_displayed()
-        assert blanket_ordered and handkerchief_ordered
+        routes_page.enter_from(data.ADDRESS_FROM)
+        routes_page.enter_to(data.ADDRESS_TO)
+        routes_page.click_call_a_taxi()
+        routes_page.click_supportive()
+        routes_page.blanket_and_hanker()
+        assert routes_page.get_slider_selected() == 'true'
+
 
     def test_order_2_ice_creams(self):
         self.driver.get(URBAN_ROUTES_URL)
         routes_page = UrbanRoutesPage(self.driver)
-        routes_page.order_multiple_ice_creams(count=2)
-        # Assert visible confirmation exists
-        confirmations = self.driver.find_elements(By.CLASS_NAME, 'ice-cream-confirmed')
-        assert len(confirmations) >= 2
+        routes_page.enter_from(data.ADDRESS_FROM)
+        routes_page.enter_to(data.ADDRESS_TO)
+        routes_page.click_call_a_taxi()
+        routes_page.click_supportive()
+        routes_page.select_ice_cream()
+        routes_page.select_ice_cream()
+        assert routes_page.get_ice_cream() == '2'
+
+
 
     def test_car_search_model_appears(self):
         self.driver.get(URBAN_ROUTES_URL)
         routes_page = UrbanRoutesPage(self.driver)
-        assert routes_page.car_model_is_visible()
+        routes_page.enter_from(data.ADDRESS_FROM)
+        routes_page.enter_to(data.ADDRESS_TO)
+        routes_page.click_call_a_taxi()
+        routes_page.click_supportive()
+        routes_page.enter_message(data.MESSAGE_FOR_DRIVER)
+        routes_page.select_order_button()
+        assert routes_page.get_car_search_title() == 'Car search'
 
 
-    def test_order_2_ice_creams1(self):
-        self.driver.get(URBAN_ROUTES_URL)
-        routes_page = UrbanRoutesPage(self.driver)
-        routes_page.order_multiple_ice_creams(count=2)
-        confirmations = self.driver.find_elements(By.CLASS_NAME, 'ice-cream-confirmed')
-        assert len(confirmations) >= 2
 
 
     @classmethod
